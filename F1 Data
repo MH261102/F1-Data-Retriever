@@ -1,0 +1,96 @@
+import requests
+from pprint import PrettyPrinter
+
+BASE_URL = "https://api.openf1.org"
+printer = PrettyPrinter()
+
+def fetch_data(endpoint, params):
+    url = f"{BASE_URL}{endpoint}"
+    response = requests.get(url, params=params)
+    if response.status_code == 200:
+        data = response.json()
+        printer.pprint(data)
+    else:
+        print(f"Failed to retrieve data: {response.status_code}")
+
+def get_params(data_type):
+    params = {}
+    if data_type in ["car_data", "drivers", "intervals", "laps", "location", "pit", "position", "race_control", "stints", "team_radio", "weather"]:
+        # Fetch session key based on meeting information
+        year = input("Enter the year: ")
+        country_name = input("Enter the country name: ")
+        session_name = input("Enter the session name (Practice1/Qualifying/Sprint/Race): ")
+        
+        session_key = fetch_session_key(year, country_name, session_name)
+        if session_key:
+            params['session_key'] = session_key
+        else:
+            print("Session not found. Exiting.")
+            return None
+        
+        params['driver_number'] = input("Enter the driver number: ")
+
+    if data_type == "race_control":
+        params['flag'] = input("Enter the flag type: ")
+        params['date'] = input("Enter the date range (e.g., >=2023-01-01, <2023-09-01): ")
+    if data_type == "stints":
+        params['tyre_age_at_start'] = input("Enter the tyre age at start (e.g., >=3): ")
+    if data_type == "weather":
+        params['wind_direction'] = input("Enter the wind direction (e.g., >=130): ")
+        params['track_temperature'] = input("Enter the track temperature (e.g., >=52): ")
+
+    return params
+
+def fetch_session_key(year, country_name, session_name):
+    url = f"{BASE_URL}/v1/sessions"
+    params = {
+        'year': year,
+        'country_name': country_name,
+        'session_name': session_name
+    }
+    response = requests.get(url, params=params)
+    if response.status_code == 200:
+        sessions_data = response.json()
+        if sessions_data:
+            # Assuming the first match is the desired session
+            return sessions_data[0]['session_key']
+        else:
+            print("No sessions found for the given criteria.")
+            return None
+    else:
+        print(f"Failed to retrieve sessions: {response.status_code}")
+        return None
+
+def main():
+    data_types = {
+        "1": "car_data",
+        "2": "drivers",
+        "3": "intervals",
+        "4": "laps",
+        "5": "location",
+        "6": "meetings",
+        "7": "pit",
+        "8": "position",
+        "9": "race_control",
+        "10": "sessions",
+        "11": "stints",
+        "12": "team_radio",
+        "13": "weather"
+    }
+
+    print("Select the type of data you want to retrieve:")
+    for key, value in data_types.items():
+        print(f"{key}. {value}")
+
+    choice = input("Enter the number corresponding to your choice: ")
+    data_type = data_types.get(choice)
+
+    if data_type:
+        params = get_params(data_type)
+        if params:
+            fetch_data(f"/v1/{data_type}", params)
+    else:
+        print("Invalid choice.")
+
+if __name__ == "__main__":
+    main()
