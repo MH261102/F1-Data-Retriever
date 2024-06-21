@@ -11,7 +11,7 @@ This Python script allows users to fetch various types of Formula 1 data from th
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/yourusername/OpenF1-Data-Retriever.git
+    git clone https://github.com/MH261102/OpenF1-Data-Retriever.git
     cd OpenF1-Data-Retriever
     ```
 
