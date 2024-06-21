@@ -12,7 +12,7 @@ This Python script allows users to fetch various types of Formula 1 data from th
 1. Clone the repository:
     ```bash
     git clone https://github.com/MH261102/OpenF1-Data-Retriever.git
-    cd OpenF1-Data-Retriever
+    cd F1-Data-Retriever
     ```
 
 2. Create and activate a virtual environment (optional but recommended):
@@ -30,7 +30,7 @@ This Python script allows users to fetch various types of Formula 1 data from th
 
 1. Run the script:
     ```bash
-    python openf1_data_retriever.py
+    python F1_Data.py
     ```
 
 2. Follow the prompts to select the type of data you want to retrieve and provide the necessary parameters.
